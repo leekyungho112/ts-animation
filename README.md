@@ -7,6 +7,6 @@
 
 - 애니메이트를 사용할 경우 아래와 같이 html태그에 motion을 붙여준다.
 
-```js
+```html
 <motion.div></motion.div>
 ```
