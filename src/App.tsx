@@ -15,40 +15,61 @@ const Wrapper = styled(motion.div)`
   align-items: center;
   background-color: teal;
 `;
+
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 50vw;
+  gap: 10px;
+  div:first-child,
+  div:last-child {
+    grid-column: span 2;
+  }
+`;
 const Box = styled(motion.div)`
-  width: 400px;
-  height: 400px;
+  height: 200px;
   background-color: rgba(255, 255, 255, 1);
-  display: flex;
-  justify-content: center;
-  align-items: center;
   border-radius: 40px;
 `;
 
-const Circle = styled(motion.div)`
-  background-color: #00a5ff;
-  height: 100px;
-  width: 100px;
+const Overlay = styled(motion.div)`
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
+
 const box = {};
 
 function App() {
-  const [clicked, setClicked] = useState(false);
-  const toggleClicked = () => {
-    setClicked((prev) => !prev);
-  };
+  const [id, setId] = useState<null | string>(null);
+  console.log(id);
   return (
-    <Wrapper onClick={toggleClicked}>
-      <Box>
-        {!clicked ? (
-          <Circle layoutId="circle" style={{ scale: 2, borderRadius: 50 }} />
+    <Wrapper>
+      <Grid>
+        {[1, 2, 3, 4].map((item) => (
+          <Box
+            onClick={() => setId(item + '')}
+            key={item}
+            layoutId={item + ''}
+          />
+        ))}
+      </Grid>
+      <AnimatePresence>
+        {id ? (
+          <Overlay
+            onClick={() => setId(null)}
+            initial={{ backgroundColor: 'rgba(0,0,0,0)' }}
+            animate={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+            exit={{ backgroundColor: 'rgba(0,0,0,0)' }}
+          >
+            <Box layoutId={id} style={{ width: 400, height: 200 }} />
+          </Overlay>
         ) : null}
-      </Box>
-      <Box>
-        {clicked ? (
-          <Circle layoutId="circle" style={{ scale: 0.5, borderRadius: 0 }} />
-        ) : null}
-      </Box>
+      </AnimatePresence>
     </Wrapper>
   );
 }
