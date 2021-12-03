@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { RecoilRoot } from 'recoil';
 import { createGlobalStyle, ThemeProvider } from 'styled-components';
 import App from './App';
-import { darkTheme } from './theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { theme } from './theme';
 
 const GlobalStyle = createGlobalStyle`
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&display=swap');
@@ -59,9 +60,9 @@ table {
 }
 body {
   font-family: 'Oswald', sans-serif;
-  color:black;
+  color:${(props) => props.theme.white.darker};
   line-height: 1.2;
- 
+ background-color: black;
   
 }
 a {
@@ -72,13 +73,16 @@ a {
 
 `;
 
+const client = new QueryClient();
 ReactDOM.render(
   <React.StrictMode>
     <RecoilRoot>
-      <ThemeProvider theme={darkTheme}>
-        <GlobalStyle />
-        <App />
-      </ThemeProvider>
+      <QueryClientProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          <App />
+        </ThemeProvider>
+      </QueryClientProvider>
     </RecoilRoot>
   </React.StrictMode>,
   document.getElementById('root')
