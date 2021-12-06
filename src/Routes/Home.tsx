@@ -53,12 +53,32 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   height: 200px;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 
 const rowVariants = {
   hidden: { x: window.outerWidth - 5 },
   visible: { x: 0 },
   exit: { x: -window.outerWidth + 5 },
+};
+const boxVariants = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    scale: 1.3,
+    y: -50,
+    transition: {
+      delay: 0.5,
+      duration: 0.3,
+      type: 'tween',
+    },
+  },
 };
 const offset = 6;
 
@@ -111,8 +131,10 @@ const Home = () => {
                   .map((movie) => (
                     <Box
                       key={movie.id}
-                      whileHover={{ scale: 1.3 }}
-                      transition={{ delay: 2 }}
+                      whileHover="hover"
+                      initial="normal"
+                      variants={boxVariants}
+                      transition={{ type: 'tween' }}
                       bgPhoto={makeImagePath(movie.poster_path, 'w500')}
                     />
                   ))}
