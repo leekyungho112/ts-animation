@@ -88,11 +88,39 @@ const BigMovie = styled(motion.div)`
   position: absolute;
   width: 40vw;
   height: 80vh;
-  background-color: red;
-  top: ;
+  background-color: ${(props) => props.theme.black.darker};
+  border-radius: 15px;
+  overflow: hidden;
   left: 0;
   right: 0;
   margin: 0 auto;
+`;
+const BigImage = styled.div`
+  width: 100%;
+  height: 400px;
+  background-position: center center;
+  background-size: cover;
+`;
+const BigTitle = styled.h3`
+  padding: 20px;
+  position: relative;
+  top: -60px;
+  font-size: 30px;
+  color: ${(props) => props.theme.white.lighter};
+`;
+const BigOverView = styled.p`
+  padding: 20px;
+  position: relative;
+  top: -80px;
+  font-size: 14px;
+  color: ${(props) => props.theme.white.lighter};
+`;
+const BigDate = styled.span`
+  padding: 20px;
+  position: relative;
+  top: -80px;
+
+  color: ${(props) => props.theme.white.lighter};
 `;
 const rowVariants = {
   hidden: { x: window.outerWidth - 5 },
@@ -151,6 +179,11 @@ const Home = () => {
     navigate(`/movies/${movieId}`);
   };
   const onOverlayClick = () => navigate('/');
+  const clickedMovie =
+    bigMovieMatch?.params.movieId &&
+    data?.results.find(
+      (movie) => movie.id + '' === bigMovieMatch.params.movieId
+    );
 
   return (
     <Wrapper>
@@ -187,7 +220,7 @@ const Home = () => {
                       variants={boxVariants}
                       transition={{ type: 'tween' }}
                       onClick={() => onBoxClicked(movie.id)}
-                      bgPhoto={makeImagePath(movie.poster_path, 'w500')}
+                      bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
                     >
                       <Info variants={infoVariants}>
                         <h4>{movie.title}</h4>
@@ -208,7 +241,23 @@ const Home = () => {
                 <BigMovie
                   style={{ top: scrollY.get() + 100 }}
                   layoutId={bigMovieMatch.params.movieId}
-                ></BigMovie>
+                >
+                  {clickedMovie && (
+                    <>
+                      <BigImage
+                        style={{
+                          backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
+                            clickedMovie.backdrop_path,
+                            'w500'
+                          )})`,
+                        }}
+                      />
+                      <BigTitle>{clickedMovie.title}</BigTitle>
+                      <BigOverView>{clickedMovie.overview}</BigOverView>
+                      <BigDate>{clickedMovie.release_date}</BigDate>
+                    </>
+                  )}
+                </BigMovie>
               </>
             ) : null}
           </AnimatePresence>
