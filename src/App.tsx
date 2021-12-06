@@ -7,6 +7,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+
       <Routes>
         <Route path="/tv" element={<Tv />} />
       </Routes>
@@ -14,7 +15,9 @@ function App() {
         <Route path="/search" element={<Search />} />
       </Routes>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Home />}>
+          <Route path="/movies/:movieId" element={<Home />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

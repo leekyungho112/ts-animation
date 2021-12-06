@@ -3,7 +3,8 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { getMovies, IGetMoviesResult } from '../api';
 import { makeImagePath } from '../utils';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useNavigate, useMatch } from 'react-router-dom';
+import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 const Wrapper = styled.div`
   background-color: black;
   padding-bottom: 200px;
@@ -53,6 +54,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   height: 200px;
+  cursor: pointer;
   &:first-child {
     transform-origin: center left;
   }
@@ -60,7 +62,38 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
     transform-origin: center right;
   }
 `;
+const Info = styled(motion.div)`
+  padding: 20px;
+  background-color: ${(props) => props.theme.black.darker};
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  h4 {
+    text-align: center;
+    font-size: 14px;
+  }
+`;
 
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
+
+const BigMovie = styled(motion.div)`
+  position: absolute;
+  width: 40vw;
+  height: 80vh;
+  background-color: red;
+  top: ;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+`;
 const rowVariants = {
   hidden: { x: window.outerWidth - 5 },
   visible: { x: 0 },
@@ -80,9 +113,22 @@ const boxVariants = {
     },
   },
 };
+const infoVariants = {
+  hover: {
+    opacity: 1,
+    transition: {
+      delay: 0.5,
+      duration: 0.3,
+      type: 'tween',
+    },
+  },
+};
 const offset = 6;
 
 const Home = () => {
+  const navigate = useNavigate();
+  const bigMovieMatch = useMatch('/movies/:movieId');
+  const { scrollY } = useViewportScroll();
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
     getMovies
@@ -101,6 +147,10 @@ const Home = () => {
     }
   };
   const toggleLeaving = () => setLeaving((prev) => !prev);
+  const onBoxClicked = (movieId: number) => {
+    navigate(`/movies/${movieId}`);
+  };
+  const onOverlayClick = () => navigate('/');
 
   return (
     <Wrapper>
@@ -130,17 +180,38 @@ const Home = () => {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
+                      layoutId={movie.id + ''}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
                       transition={{ type: 'tween' }}
+                      onClick={() => onBoxClicked(movie.id)}
                       bgPhoto={makeImagePath(movie.poster_path, 'w500')}
-                    />
+                    >
+                      <Info variants={infoVariants}>
+                        <h4>{movie.title}</h4>
+                      </Info>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
           </Slider>
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <>
+                <Overlay
+                  onClick={onOverlayClick}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
+                <BigMovie
+                  style={{ top: scrollY.get() + 100 }}
+                  layoutId={bigMovieMatch.params.movieId}
+                ></BigMovie>
+              </>
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
