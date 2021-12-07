@@ -1,18 +1,12 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import {
-  getMovies,
-  IGetMoviesResult,
-  similarMovie,
-  topMovies,
-  upcomingMovie,
-} from '../api';
+import { getMovies, IGetMoviesResult, topMovies, upcomingMovie } from '../api';
 import { makeImagePath } from '../utils';
 import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import { IoArrowForward } from 'react-icons/io5';
-import Similar from '../Components/Similar';
+import Detail from '../Components/Detail';
 const Wrapper = styled.div`
   background-color: black;
   padding-bottom: 300px;
@@ -54,7 +48,7 @@ const UpcomingSlide = styled.div`
   position: relative;
 `;
 const TopSlide = styled.div`
-  margin-top: 500px;
+  margin-top: 300px;
   position: relative;
 `;
 
@@ -112,33 +106,7 @@ const BigMovie = styled(motion.div)`
   right: 0;
   margin: 0 auto;
 `;
-const BigImage = styled.div`
-  width: 100%;
-  height: 400px;
-  background-position: center center;
-  background-size: cover;
-`;
-const BigTitle = styled.h3`
-  padding: 20px;
-  position: relative;
-  top: -60px;
-  font-size: 30px;
-  color: ${(props) => props.theme.white.lighter};
-`;
-const BigOverView = styled.p`
-  padding: 20px;
-  position: relative;
-  top: -80px;
-  font-size: 14px;
-  color: ${(props) => props.theme.white.lighter};
-`;
-const BigDate = styled.span`
-  padding: 20px;
-  position: relative;
-  top: -80px;
 
-  color: ${(props) => props.theme.white.lighter};
-`;
 const ArrowBtn = styled.div`
   width: 50px;
   height: 200px;
@@ -173,7 +141,6 @@ const boxVariants = {
 const infoVariants = {
   hover: {
     opacity: 1,
-
     transition: {
       delay: 0.5,
       duration: 0.3,
@@ -191,7 +158,6 @@ const Home = () => {
     ['movies', 'nowPlaying'],
     getMovies
   );
-
   const {
     data: topMovieData,
     isLoading: topMovieLoading,
@@ -202,6 +168,8 @@ const Home = () => {
   } = useQuery<IGetMoviesResult>(['movie', 'upcoming'], upcomingMovie);
 
   const [index, setIndex] = useState(0);
+  const [topIndex, setTopIndex] = useState(0);
+  const [upIndex, setUpIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
   const incraseIndex = () => {
     if (data) {
@@ -212,6 +180,26 @@ const Home = () => {
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
   };
+  const upInCreseIndex = () => {
+    if (upcomingData) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = upcomingData?.results.length - 2;
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setUpIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+  const topIncreseIndex = () => {
+    if (topMovieData) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalMovies = topMovieData?.results.length - 2;
+
+      const maxIndex = Math.floor(totalMovies / offset) - 1;
+      setTopIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+
   const toggleLeaving = () => setLeaving((prev) => !prev);
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
@@ -228,6 +216,7 @@ const Home = () => {
     topMovieData?.results.find(
       (movie) => movie.id + '' === bigMovieMatch.params.movieId
     );
+
   const upcomingClick =
     bigMovieMatch?.params.movieId &&
     upcomingData?.results.find(
@@ -245,6 +234,7 @@ const Home = () => {
             <OverView>{data?.results[0]?.overview}</OverView>
           </Banner>
           <Slider>
+            <h1>{`Now Playing Movie (${offset * index + offset})`}</h1>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
@@ -259,7 +249,7 @@ const Home = () => {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ''}
+                      // layoutId={String(movie.id)}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
@@ -280,6 +270,7 @@ const Home = () => {
             </ArrowBtn>
           </Slider>
           <UpcomingSlide>
+            <h1>{`UP-coming Movie (${offset * upIndex + offset})`}</h1>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
@@ -287,14 +278,14 @@ const Home = () => {
                 animate="visible"
                 exit="exit"
                 transition={{ type: 'tween', duration: 1 }}
-                key={index}
+                key={upIndex}
               >
                 {upcomingData?.results
-                  .slice(1)
-                  .slice(offset * index, offset * index + offset)
+                  .slice(2)
+                  .slice(offset * upIndex, offset * upIndex + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ''}
+                      layoutId={String(movie.id)}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
@@ -310,8 +301,12 @@ const Home = () => {
                   ))}
               </Row>
             </AnimatePresence>
+            <ArrowBtn onClick={upInCreseIndex}>
+              <IoArrowForward style={{ fontSize: 30 }} />
+            </ArrowBtn>
           </UpcomingSlide>
           <TopSlide>
+            <h1>{`TOP Rated Movie (${offset * topIndex + offset})`}</h1>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
                 variants={rowVariants}
@@ -319,11 +314,11 @@ const Home = () => {
                 animate="visible"
                 exit="exit"
                 transition={{ type: 'tween', duration: 1 }}
-                key={index}
+                key={topIndex}
               >
                 {topMovieData?.results
-                  .slice(1)
-                  .slice(offset * index, offset * index + offset)
+                  .slice(2)
+                  .slice(offset * topIndex, offset * topIndex + offset)
                   .map((movie) => (
                     <Box
                       layoutId={movie.id + ''}
@@ -342,6 +337,9 @@ const Home = () => {
                   ))}
               </Row>
             </AnimatePresence>
+            <ArrowBtn onClick={topIncreseIndex}>
+              <IoArrowForward style={{ fontSize: 30 }} />
+            </ArrowBtn>
           </TopSlide>
           <AnimatePresence>
             {bigMovieMatch ? (
@@ -358,52 +356,9 @@ const Home = () => {
                   }}
                   layoutId={bigMovieMatch.params.movieId}
                 >
-                  {clickedMovie && (
-                    <>
-                      <BigImage
-                        style={{
-                          backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
-                            clickedMovie.backdrop_path,
-                            'w500'
-                          )})`,
-                        }}
-                      />
-                      <BigTitle>{clickedMovie.title}</BigTitle>
-                      <BigOverView>{clickedMovie.overview}</BigOverView>
-                      <BigDate>{clickedMovie.release_date}</BigDate>
-                      <Similar movieId={clickedMovie.id + ''} />
-                    </>
-                  )}
-                  {/* {upcomingClick && (
-                    <>
-                      <BigImage
-                        style={{
-                          backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
-                            upcomingClick.backdrop_path,
-                            'w500'
-                          )})`,
-                        }}
-                      />
-                      <BigTitle>{upcomingClick.title}</BigTitle>
-                      <BigOverView>{upcomingClick.overview}</BigOverView>
-                      <BigDate>{upcomingClick.release_date}</BigDate>
-                    </>
-                  )} */}
-                  {/* {topMovieClick && (
-                    <>
-                      <BigImage
-                        style={{
-                          backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
-                            topMovieClick.backdrop_path,
-                            'w500'
-                          )})`,
-                        }}
-                      />
-                      <BigTitle>{topMovieClick.title}</BigTitle>
-                      <BigOverView>{topMovieClick.overview}</BigOverView>
-                      <BigDate>{topMovieClick.release_date}</BigDate>
-                    </>
-                  )} */}
+                  {clickedMovie && <Detail movieId={clickedMovie.id + ''} />}
+                  {topMovieClick && <Detail movieId={topMovieClick.id + ''} />}
+                  {upcomingClick && <Detail movieId={upcomingClick.id + ''} />}
                 </BigMovie>
               </>
             ) : null}

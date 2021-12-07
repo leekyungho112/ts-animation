@@ -4,6 +4,7 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { IGetMoviesResult, similarMovie } from '../api';
 import { makeImagePath } from '../utils';
+import noPoster from '../assets/noPosterSmall.png';
 
 const Container = styled.div`
   display: grid;
@@ -44,26 +45,30 @@ const boxVariants = {
   },
 };
 const Similar = ({ movieId }: ParamsProp) => {
-  const {
-    data: similarData,
-    isLoading: similarLoading,
-  } = useQuery<IGetMoviesResult>(['movie', movieId], () =>
-    similarMovie(movieId)
+  const { data, isLoading } = useQuery<IGetMoviesResult>(
+    ['movie', 'similar'],
+    () => similarMovie(movieId)
   );
 
   return (
     <Container>
-      {similarData?.results.map((movie) => (
-        <Box
-          variants={boxVariants}
-          initial="normal"
-          whileHover="hover"
-          key={movie.id}
-          bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
-        >
-          {movie.title}
-        </Box>
-      ))}
+      {isLoading
+        ? 'loading,,,'
+        : data?.results.map((movie) => (
+            <Box
+              variants={boxVariants}
+              initial="normal"
+              whileHover="hover"
+              key={movie.id}
+              bgPhoto={
+                movie.backdrop_path
+                  ? makeImagePath(movie.backdrop_path, 'w500')
+                  : noPoster
+              }
+            >
+              {movie.title}
+            </Box>
+          ))}
     </Container>
   );
 };

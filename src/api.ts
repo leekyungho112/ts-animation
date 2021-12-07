@@ -11,9 +11,20 @@ interface IMovie {
   name?: string;
   media_type?: string;
 }
+export interface IGetMovieDetail {
+  adult: boolean;
+  backdrop_path: string;
+  genres: [];
+  homepage: string;
+  id: string;
+  production_companies: [];
+  title: string;
+  vote_average: number;
+  overview: string;
+}
 
 export interface IGetMoviesResult {
-  dates: {
+  dates?: {
     maximum: string;
     minimum: string;
   };
@@ -31,6 +42,11 @@ export interface ISearchResult {
 export function getMovies() {
   return fetch(
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function getMovieDetail(movieId: string) {
+  return fetch(
+    `${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
 export function topMovies() {
