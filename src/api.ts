@@ -8,6 +8,8 @@ interface IMovie {
   title: string;
   release_date?: string;
   vote_average?: number;
+  name?: string;
+  media_type?: string;
 }
 
 export interface IGetMoviesResult {
@@ -25,13 +27,25 @@ export interface ISearchResult {
   page: number;
   results: IMovie[];
 }
-// interface ISearch {
-//   keyword: string;
-// }
 
 export function getMovies() {
   return fetch(
     `${BASE_PATH}/movie/now_playing?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function topMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function upcomingMovie() {
+  return fetch(
+    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function similarMovie(movieId: string) {
+  return fetch(
+    `${BASE_PATH}/movie/${movieId}/similar?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
 
