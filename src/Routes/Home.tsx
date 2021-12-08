@@ -100,7 +100,7 @@ const BigMovie = styled(motion.div)`
   width: 50vw;
   height: 80vh;
   background-color: ${(props) => props.theme.black.darker};
-  border-radius: 15px;
+
   overflow-y: scroll;
   left: 0;
   right: 0;
