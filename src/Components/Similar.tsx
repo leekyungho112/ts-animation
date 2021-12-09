@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { IGetMoviesResult, similarMovie } from '../api';
 import { makeImagePath } from '../utils';
 import noPoster from '../assets/noPosterSmall.png';
-
+import { useParams } from 'react-router-dom';
 const Container = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -44,7 +44,11 @@ const boxVariants = {
     },
   },
 };
-const Similar = ({ movieId }: ParamsProp) => {
+interface RouteParams {
+  movieId: string;
+}
+const Similar = () => {
+  const { movieId } = useParams() as RouteParams;
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ['movie', 'similar'],
     () => similarMovie(movieId)

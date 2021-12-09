@@ -102,7 +102,7 @@ const Search = () => {
   const { data, isLoading } = useQuery<ISearchResult>(['search', keyword], () =>
     searchAll(keyword)
   );
-  console.log(data);
+
   return (
     <Wrapper>
       {isLoading ? (

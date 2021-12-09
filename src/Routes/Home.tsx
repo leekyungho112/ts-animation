@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { getMovies, IGetMoviesResult, topMovies, upcomingMovie } from '../api';
 import { makeImagePath } from '../utils';
-import { useNavigate, useMatch } from 'react-router-dom';
+import { useNavigate, useMatch, Routes, Route } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import { IoArrowForward } from 'react-icons/io5';
 import Detail from '../Components/Detail';
@@ -175,7 +175,7 @@ const Home = () => {
     if (data) {
       if (leaving) return;
       toggleLeaving();
-      const totalMovies = data?.results.length - 1;
+      const totalMovies = data?.results.length - 2;
       const maxIndex = Math.floor(totalMovies / offset) - 1;
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
     }
@@ -204,24 +204,13 @@ const Home = () => {
   const onBoxClicked = (movieId: number) => {
     navigate(`/movies/${movieId}`);
   };
-  const onOverlayClick = () => navigate('/');
+  const onOverlayClick = () => navigate(-1);
   const clickedMovie =
     bigMovieMatch?.params.movieId &&
     data?.results.find(
-      (movie) => movie.id + '' === bigMovieMatch.params.movieId
+      (movie) => String(movie.id) === bigMovieMatch.params.movieId
     );
 
-  const topMovieClick =
-    bigMovieMatch?.params.movieId &&
-    topMovieData?.results.find(
-      (movie) => movie.id + '' === bigMovieMatch.params.movieId
-    );
-
-  const upcomingClick =
-    bigMovieMatch?.params.movieId &&
-    upcomingData?.results.find(
-      (movie) => movie.id + '' === bigMovieMatch.params.movieId
-    );
   const isLoading = nowLoading || topMovieLoading || upcomingLoading;
   return (
     <Wrapper>
@@ -245,12 +234,12 @@ const Home = () => {
                 key={index}
               >
                 {data?.results
-                  .slice(1)
+                  .slice(2)
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
-                      // layoutId={String(movie.id)}
-                      key={movie.id}
+                      layoutId={String(movie.id)}
+                      key={movie.backdrop_path}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -286,7 +275,7 @@ const Home = () => {
                   .map((movie) => (
                     <Box
                       layoutId={String(movie.id)}
-                      key={movie.id}
+                      key={movie.title}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -321,8 +310,8 @@ const Home = () => {
                   .slice(offset * topIndex, offset * topIndex + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={movie.id + ''}
-                      key={movie.id}
+                      layoutId={String(movie.id)}
+                      key={movie.poster_path}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -341,7 +330,7 @@ const Home = () => {
               <IoArrowForward style={{ fontSize: 30 }} />
             </ArrowBtn>
           </TopSlide>
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             {bigMovieMatch ? (
               <>
                 <Overlay
@@ -356,9 +345,7 @@ const Home = () => {
                   }}
                   layoutId={bigMovieMatch.params.movieId}
                 >
-                  {clickedMovie && <Detail movieId={clickedMovie.id + ''} />}
-                  {topMovieClick && <Detail movieId={topMovieClick.id + ''} />}
-                  {upcomingClick && <Detail movieId={upcomingClick.id + ''} />}
+                  <Detail />
                 </BigMovie>
               </>
             ) : null}

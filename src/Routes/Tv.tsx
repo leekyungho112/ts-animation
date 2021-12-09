@@ -1,4 +1,5 @@
-import React from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { getTv, IGetTv } from '../api';
@@ -35,18 +36,95 @@ const OverView = styled.p`
   width: 50%;
 `;
 
+const Slide = styled.div`
+  position: relative;
+  top: -100px;
+`;
+
+const Row = styled(motion.div)`
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 5px;
+  position: absolute;
+  width: 100%;
+`;
+const Box = styled(motion.div)<{ bgPhoto: string }>`
+  background-image: url(${(props) => props.bgPhoto});
+  background-size: cover;
+  background-position: center center;
+  height: 200px;
+  cursor: pointer;
+  &:first-child {
+    transform-origin: center left;
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
+`;
+
+const rowVariants = {
+  hidden: { x: window.outerWidth - 5 },
+  visible: { x: 0 },
+  exit: { x: -window.outerWidth + 5 },
+};
+const offset = 6;
+
 const Tv = () => {
   const { data, isLoading } = useQuery<IGetTv>(['tv', 'today'], getTv);
-  console.log(data);
+  const [todayIndex, setTodayIndex] = useState(0);
+  const [leaving, setLeaving] = useState(false);
+
+  const increaseToday = () => {
+    if (data) {
+      if (leaving) return;
+      toggleLeaving();
+      const totalTv = data?.results.length - 2;
+      const maxIndex = Math.floor(totalTv / offset) - 1;
+      setTodayIndex((prev) => (prev === maxIndex ? 0 : prev + 1));
+    }
+  };
+
+  const toggleLeaving = () => setLeaving((prev) => !prev);
   return (
     <Wrapper>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
-        <Banner bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}>
-          <Title>{data?.results[0]?.name}</Title>
-          <OverView>{data?.results[0]?.overview}</OverView>
-        </Banner>
+        <>
+          <Banner
+            bgPhoto={makeImagePath(data?.results[0].backdrop_path || '')}
+            onClick={increaseToday}
+          >
+            <Title>{data?.results[0]?.name}</Title>
+            <OverView>{data?.results[0]?.overview}</OverView>
+          </Banner>
+          <Slide>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ type: 'tween', duration: 1 }}
+                key={todayIndex}
+              >
+                {data?.results
+                  .slice(2)
+                  .slice(offset * todayIndex, offset * todayIndex + offset)
+                  .map((tv) => (
+                    <Box
+                      key={tv.id}
+                      bgPhoto={
+                        tv.backdrop_path
+                          ? makeImagePath(tv.backdrop_path, 'w500')
+                          : makeImagePath(tv.poster_path, 'w500')
+                      }
+                    />
+                  ))}
+              </Row>
+            </AnimatePresence>
+          </Slide>
+        </>
       )}
     </Wrapper>
   );

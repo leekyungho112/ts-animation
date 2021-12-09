@@ -5,6 +5,7 @@ import { getMovieDetail, IGetMovieDetail } from '../api';
 import { makeImagePath } from '../utils';
 import Similar from './Similar';
 import noPoster from '../assets/noPosterSmall.png';
+import { useParams } from 'react-router-dom';
 interface ParamsProp {
   movieId: string;
 }
@@ -107,7 +108,11 @@ const CompanyName = styled.span`
   font-size: 12px;
 `;
 
-const Detail = ({ movieId }: ParamsProp) => {
+interface RouteParams {
+  movieId: string;
+}
+const Detail = () => {
+  const { movieId } = useParams() as RouteParams;
   const { data, isLoading } = useQuery<IGetMovieDetail>(
     ['movie', 'Detail'],
     () => getMovieDetail(movieId)
@@ -115,7 +120,7 @@ const Detail = ({ movieId }: ParamsProp) => {
   const time = data?.runtime;
   const hour = time && Math.floor(time / 60);
   const minutes = time && time % 60;
-  console.log(data);
+
   return (
     <Container>
       {isLoading ? (
@@ -158,7 +163,7 @@ const Detail = ({ movieId }: ParamsProp) => {
                 </CompanyInfo>
               ))}
           </BigCompany>
-          <Similar movieId={movieId} />
+          <Similar />
         </>
       )}
     </Container>
