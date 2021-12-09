@@ -33,12 +33,14 @@ export interface IGetMovieDetail {
   backdrop_path: string;
   genres: IGenres[];
   homepage: string;
-  id: string;
+  id: number;
   production_companies: ICompanies[];
   title: string;
   vote_average: number;
   overview: string;
+  name: string;
   runtime: number;
+  number_of_seasons: number;
 }
 
 export interface IGetMoviesResult {
@@ -63,6 +65,27 @@ export interface ISearchResult {
   page: number;
   results: IMovie[];
 }
+interface ITrend {
+  name: string;
+  backdrop_path: string;
+  media_type: string;
+  id: number;
+  overview: string;
+  title: string;
+  vote_average: number;
+  poster_path: string;
+}
+export interface ITrendResult {
+  page: number;
+  results: ITrend[];
+  total_pages: number;
+  total_results: number;
+}
+export function allTrending() {
+  return fetch(
+    `${BASE_PATH}/trending/all/week?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
 
 export function getMovies() {
   return fetch(
@@ -77,12 +100,17 @@ export function topMovies() {
 }
 export function upcomingMovie() {
   return fetch(
-    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR`
+    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR&page=5`
   ).then((response) => response.json());
 }
 export function getMovieDetail(movieId: string) {
   return fetch(
     `${BASE_PATH}/movie/${movieId}?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function getTvDetail(tvId: string) {
+  return fetch(
+    `${BASE_PATH}/tv/${tvId}?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
 export function similarMovie(movieId: string) {

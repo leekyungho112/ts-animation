@@ -1,11 +1,12 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { getMovieDetail, IGetMovieDetail } from '../api';
+import { getMovieDetail, getTvDetail, IGetMovieDetail } from '../api';
 import { makeImagePath } from '../utils';
 import Similar from './Similar';
 import noPoster from '../assets/noPosterSmall.png';
 import { useParams } from 'react-router-dom';
+import Movie from '../Routes/Movie';
 interface ParamsProp {
   movieId: string;
 }
@@ -110,17 +111,24 @@ const CompanyName = styled.span`
 
 interface RouteParams {
   movieId: string;
+  tvId: string;
 }
 const Detail = () => {
-  const { movieId } = useParams() as RouteParams;
-  const { data, isLoading } = useQuery<IGetMovieDetail>(
-    ['movie', 'Detail'],
-    () => getMovieDetail(movieId)
-  );
-  const time = data?.runtime;
-  const hour = time && Math.floor(time / 60);
-  const minutes = time && time % 60;
+  const { movieId, tvId } = useParams() as RouteParams;
 
+  const { data, isLoading: movieLoading } = useQuery<IGetMovieDetail>(
+    ['movie', 'Detail'],
+    () => (movieId ? getMovieDetail(movieId) : getTvDetail(tvId))
+  );
+  // const { data: result, isLoading: tvLoading } = useQuery<IGetTvDetail>(
+  //   ['tv', 'tvDetail'],
+  //   () => getTvDetail(tvId)
+  // );
+
+  const time = data?.runtime;
+  // const hour = time && Math.floor(time / 60);
+  // const minutes = time && time % 60;
+  const isLoading = movieLoading;
   return (
     <Container>
       {isLoading ? (
@@ -136,11 +144,15 @@ const Detail = () => {
             }}
           />
           <BigHeader>
-            <BigTitle>{data?.title}</BigTitle>
-            <BigRate>{`⭐️ ${data?.vote_average}`}</BigRate>
+            <BigTitle>{movieId ? data?.title : data?.name}</BigTitle>
+            <BigRate>{`⭐️ ${data && data?.vote_average}`}</BigRate>
           </BigHeader>
-          <BigOverView>{data?.overview}</BigOverView>
-          <BigRunTime>{`${hour}시간 ${minutes}분`}</BigRunTime>
+          <BigOverView>{data && data?.overview}</BigOverView>
+          <BigRunTime>
+            {movieId
+              ? `${data?.runtime}분`
+              : `시즌: ${data?.number_of_seasons}`}
+          </BigRunTime>
           <BigGenres>
             {data &&
               data?.genres.map((genre) => (
@@ -149,10 +161,10 @@ const Detail = () => {
           </BigGenres>
           <BigCompany>
             {data &&
-              data?.production_companies?.map((company) => (
+              data?.production_companies?.map((company, index) => (
                 <CompanyInfo>
                   <CompanyLogo
-                    key={company.id}
+                    key={index}
                     bgPhoto={
                       company.logo_path
                         ? makeImagePath(company.logo_path, 'w500')
@@ -163,7 +175,7 @@ const Detail = () => {
                 </CompanyInfo>
               ))}
           </BigCompany>
-          <Similar />
+          {movieId && <Similar />}
         </>
       )}
     </Container>
