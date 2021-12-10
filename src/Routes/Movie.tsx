@@ -229,12 +229,12 @@ const Movie = () => {
                 key={index}
               >
                 {data?.results
-                  .slice(2)
+                  .slice(1)
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
                       layoutId={String(movie.id)}
-                      key={movie.backdrop_path}
+                      key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -270,7 +270,7 @@ const Movie = () => {
                   .map((movie) => (
                     <Box
                       layoutId={String(movie.id)}
-                      key={movie.title}
+                      key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -306,7 +306,7 @@ const Movie = () => {
                   .map((movie) => (
                     <Box
                       layoutId={String(movie.id)}
-                      key={movie.poster_path}
+                      key={movie.id}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}

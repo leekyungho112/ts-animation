@@ -40,7 +40,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-position: center center;
   background-size: cover;
   border-radius: 10px;
-  background-color: red;
+
   box-shadow: 0px 2px 15px 0px rgba(255, 255, 255, 0.22);
   &:first-child,
   :nth-child(3),
