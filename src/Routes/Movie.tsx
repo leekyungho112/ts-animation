@@ -6,6 +6,7 @@ import { makeImagePath } from '../utils';
 import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import { IoArrowForward } from 'react-icons/io5';
+import noPoster from '../assets/noPosterSmall.png';
 import Detail from '../Components/Detail';
 const Wrapper = styled.div`
   background-color: black;
@@ -276,7 +277,11 @@ const Movie = () => {
                       variants={boxVariants}
                       transition={{ type: 'tween' }}
                       onClick={() => onBoxClicked(movie.id)}
-                      bgPhoto={makeImagePath(movie.backdrop_path, 'w500')}
+                      bgPhoto={
+                        movie.backdrop_path
+                          ? makeImagePath(movie.backdrop_path, 'w500')
+                          : noPoster
+                      }
                     >
                       <Info variants={infoVariants}>
                         <h4>{movie.title}</h4>
