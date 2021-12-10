@@ -132,7 +132,7 @@ export function getTv() {
 }
 export function getPopularTv() {
   return fetch(
-    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=3`
+    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=4`
   ).then((response) => response.json());
 }
 export function getTopRatedTv() {
