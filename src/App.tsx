@@ -12,6 +12,12 @@ function App() {
     <BrowserRouter basename={process.env.PUBLIC_URL}>
       <Header />
       <Routes>
+        <Route path="/" element={<Home />}>
+          <Route path="/movie/:movieId" element={<Detail />} />
+          <Route path="/tv/:tvId" element={<Detail />} />
+        </Route>
+      </Routes>
+      <Routes>
         <Route path="/movies" element={<Movie />}>
           <Route path="/movies/:movieId" element={<Detail />} />
         </Route>
@@ -25,13 +31,6 @@ function App() {
         <Route path="/search" element={<Search />}>
           <Route path="/search/movies/:movieId" element={<Detail />} />
           <Route path="/search/tv/:tvId" element={<Detail />} />
-        </Route>
-      </Routes>
-
-      <Routes>
-        <Route path="/" element={<Home />}>
-          <Route path="/movie/:movieId" element={<Detail />} />
-          <Route path="/tv/:tvId" element={<Detail />} />
         </Route>
       </Routes>
     </BrowserRouter>
