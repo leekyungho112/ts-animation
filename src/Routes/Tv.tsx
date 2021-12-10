@@ -6,6 +6,7 @@ import { getPopularTv, getTopRatedTv, getTv, IGetTv } from '../api';
 import { makeImagePath } from '../utils';
 import { useMatch, useNavigate } from 'react-router-dom';
 import { IoArrowForward } from 'react-icons/io5';
+import noPoster from '../assets/noPosterSmall.png';
 import Detail from '../Components/Detail';
 const Wrapper = styled.div`
   background-color: black;
@@ -285,7 +286,7 @@ const Tv = () => {
                       bgPhoto={
                         tv.backdrop_path
                           ? makeImagePath(tv.backdrop_path, 'w500')
-                          : makeImagePath(tv.poster_path, 'w500')
+                          : noPoster
                       }
                     >
                       <Info variants={infoVariants}>
@@ -325,7 +326,7 @@ const Tv = () => {
                       bgPhoto={
                         tv.backdrop_path
                           ? makeImagePath(tv.backdrop_path, 'w500')
-                          : makeImagePath(tv.poster_path, 'w500')
+                          : noPoster
                       }
                     >
                       <Info variants={infoVariants}>
