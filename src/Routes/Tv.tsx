@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
-import { getTv, IGetTv } from '../api';
+import { getPopularTv, getTopRatedTv, getTv, IGetTv } from '../api';
 import { makeImagePath } from '../utils';
 const Wrapper = styled.div`
   background-color: black;
@@ -40,6 +40,14 @@ const Slide = styled.div`
   position: relative;
   top: -100px;
 `;
+const PopSlide = styled.div`
+  margin-top: 200px;
+  position: relative;
+`;
+const TopSlide = styled.div`
+  margin-top: 500px;
+  position: relative;
+`;
 
 const Row = styled(motion.div)`
   display: grid;
@@ -71,6 +79,14 @@ const offset = 6;
 
 const Tv = () => {
   const { data, isLoading } = useQuery<IGetTv>(['tv', 'today'], getTv);
+  const { data: popTvData, isLoading: popTvLoading } = useQuery<IGetTv>(
+    ['tv', 'popular'],
+    getPopularTv
+  );
+  const { data: topTvData, isLoading: topTvLoading } = useQuery<IGetTv>(
+    ['tv', 'topRate'],
+    getTopRatedTv
+  );
   const [todayIndex, setTodayIndex] = useState(0);
   const [leaving, setLeaving] = useState(false);
 
@@ -98,6 +114,7 @@ const Tv = () => {
             <Title>{data?.results[0]?.name}</Title>
             <OverView>{data?.results[0]?.overview}</OverView>
           </Banner>
+
           <Slide>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
@@ -124,6 +141,58 @@ const Tv = () => {
               </Row>
             </AnimatePresence>
           </Slide>
+          <PopSlide>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ type: 'tween', duration: 1 }}
+                key={todayIndex}
+              >
+                {popTvData?.results
+                  .slice(2)
+                  .slice(offset * todayIndex, offset * todayIndex + offset)
+                  .map((tv) => (
+                    <Box
+                      key={tv.id}
+                      bgPhoto={
+                        tv.backdrop_path
+                          ? makeImagePath(tv.backdrop_path, 'w500')
+                          : makeImagePath(tv.poster_path, 'w500')
+                      }
+                    />
+                  ))}
+              </Row>
+            </AnimatePresence>
+          </PopSlide>
+          <TopSlide>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+              <Row
+                variants={rowVariants}
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                transition={{ type: 'tween', duration: 1 }}
+                key={todayIndex}
+              >
+                {topTvData?.results
+                  .slice(2)
+                  .slice(offset * todayIndex, offset * todayIndex + offset)
+                  .map((tv) => (
+                    <Box
+                      key={tv.id}
+                      bgPhoto={
+                        tv.backdrop_path
+                          ? makeImagePath(tv.backdrop_path, 'w500')
+                          : makeImagePath(tv.poster_path, 'w500')
+                      }
+                    />
+                  ))}
+              </Row>
+            </AnimatePresence>
+          </TopSlide>
         </>
       )}
     </Wrapper>

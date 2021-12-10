@@ -9,7 +9,7 @@ interface IMovie {
   release_date?: string;
   vote_average?: number;
   name?: string;
-  media_type?: string;
+  media_type: string;
 }
 interface ITv {
   id: number;
@@ -38,6 +38,7 @@ export interface IGetMovieDetail {
   title: string;
   vote_average: number;
   overview: string;
+  poster_path: string;
   name: string;
   runtime: number;
   number_of_seasons: number;
@@ -118,10 +119,25 @@ export function similarMovie(movieId: string) {
     `${BASE_PATH}/movie/${movieId}/similar?api_key=${API_KEY}&language=ko-KR`
   ).then((response) => response.json());
 }
+export function similarTv(tvId: string) {
+  return fetch(
+    `${BASE_PATH}/tv/${tvId}/similar?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
 
 export function getTv() {
   return fetch(
     `${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko-KR`
+  ).then((response) => response.json());
+}
+export function getPopularTv() {
+  return fetch(
+    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=3`
+  ).then((response) => response.json());
+}
+export function getTopRatedTv() {
+  return fetch(
+    `${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR&page=2`
   ).then((response) => response.json());
 }
 

@@ -3,7 +3,7 @@ import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { getMovies, IGetMoviesResult, topMovies, upcomingMovie } from '../api';
 import { makeImagePath } from '../utils';
-import { useNavigate, useMatch, Routes, Route } from 'react-router-dom';
+import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import { IoArrowForward } from 'react-icons/io5';
 import Detail from '../Components/Detail';
@@ -205,11 +205,6 @@ const Movie = () => {
     navigate(`/movies/${movieId}`);
   };
   const onOverlayClick = () => navigate(-1);
-  const clickedMovie =
-    bigMovieMatch?.params.movieId &&
-    data?.results.find(
-      (movie) => String(movie.id) === bigMovieMatch.params.movieId
-    );
 
   const isLoading = nowLoading || topMovieLoading || upcomingLoading;
   return (

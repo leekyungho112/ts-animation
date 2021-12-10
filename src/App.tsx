@@ -5,6 +5,7 @@ import Search from './Routes/Search';
 import Header from './Components/Header';
 
 import Movie from './Routes/Movie';
+import Detail from './Components/Detail';
 
 function App() {
   return (
@@ -19,7 +20,10 @@ function App() {
         <Route path="/tv" element={<Tv />} />
       </Routes>
       <Routes>
-        <Route path="/search" element={<Search />} />
+        <Route path="/search" element={<Search />}>
+          <Route path="/search/movies/:movieId" element={<Search />} />
+          <Route path="/search/tv/:tvId" element={<Search />} />
+        </Route>
       </Routes>
 
       <Routes>

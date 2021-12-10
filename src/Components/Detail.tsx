@@ -6,17 +6,14 @@ import { makeImagePath } from '../utils';
 import Similar from './Similar';
 import noPoster from '../assets/noPosterSmall.png';
 import { useParams } from 'react-router-dom';
-import Movie from '../Routes/Movie';
-interface ParamsProp {
-  movieId: string;
-}
+
 const Container = styled.div`
   border-radius: 20px;
 `;
 const BigImage = styled.div`
   width: 100%;
-  height: 400px;
-  background-position: center center;
+  height: 500px;
+  background-position: center top;
   background-size: cover;
 `;
 const Loader = styled.div`
@@ -93,7 +90,7 @@ const CompanyInfo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: teal;
+  background-color: darkgray;
   border-radius: 10px;
 `;
 const CompanyLogo = styled.div<{ bgPhoto: string }>`
@@ -107,6 +104,17 @@ const CompanyLogo = styled.div<{ bgPhoto: string }>`
 `;
 const CompanyName = styled.span`
   font-size: 12px;
+  font-weight: bold;
+  color: white;
+`;
+const CompanyTitle = styled.span`
+  font-size: 18px;
+  color: white;
+  border-radius: 5px;
+  margin: 0px 20px;
+  padding: 5px 5px;
+  background-color: #269251;
+  font-weight: bold;
 `;
 
 interface RouteParams {
@@ -126,8 +134,8 @@ const Detail = () => {
   // );
 
   const time = data?.runtime;
-  // const hour = time && Math.floor(time / 60);
-  // const minutes = time && time % 60;
+  const hour = time && Math.floor(time / 60);
+  const minutes = time && time % 60;
   const isLoading = movieLoading;
   return (
     <Container>
@@ -138,8 +146,7 @@ const Detail = () => {
           <BigImage
             style={{
               backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
-                data ? data?.backdrop_path : noPoster,
-                'w500'
+                data ? data?.poster_path : noPoster
               )})`,
             }}
           />
@@ -150,7 +157,7 @@ const Detail = () => {
           <BigOverView>{data && data?.overview}</BigOverView>
           <BigRunTime>
             {movieId
-              ? `${data?.runtime}분`
+              ? `${hour}시간 ${minutes}분`
               : `시즌: ${data?.number_of_seasons}`}
           </BigRunTime>
           <BigGenres>
@@ -159,6 +166,7 @@ const Detail = () => {
                 <Genre key={genre.id}>{genre.name}</Genre>
               ))}
           </BigGenres>
+          <CompanyTitle>제작사</CompanyTitle>
           <BigCompany>
             {data &&
               data?.production_companies?.map((company, index) => (
@@ -175,7 +183,8 @@ const Detail = () => {
                 </CompanyInfo>
               ))}
           </BigCompany>
-          {movieId && <Similar />}
+
+          <Similar />
         </>
       )}
     </Container>

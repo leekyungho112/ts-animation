@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { allTrending, ITrendResult } from '../api';
 import { makeImagePath } from '../utils';
-import { useNavigate, useMatch, Routes, Route } from 'react-router-dom';
+import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import Detail from '../Components/Detail';
 
@@ -14,7 +14,8 @@ const Wrapper = styled.div`
   align-items: center;
   height: 100vh;
   padding-top: 30px;
-  /* overflow: hidden; */
+  position: relative;
+  overflow: hidden;
 `;
 
 const Loader = styled.div`
@@ -48,6 +49,17 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   :last-child {
     grid-column: span 2;
   }
+  cursor: pointer;
+  &:first-child,
+  :nth-child(4),
+  :nth-child(8) {
+    transform-origin: center left;
+  }
+  &:nth-child(3),
+  :nth-child(7),
+  :last-child {
+    transform-origin: center right;
+  }
 `;
 const Info = styled(motion.div)`
   padding: 20px;
@@ -56,6 +68,7 @@ const Info = styled(motion.div)`
   position: absolute;
   width: 100%;
   bottom: 0;
+
   h4 {
     text-align: center;
     font-size: 14px;
@@ -88,8 +101,9 @@ const boxVariants = {
   },
   hover: {
     scale: 1.3,
-    y: -50,
+    y: -30,
     borderRadius: 15,
+    zIndex: 99,
     overflow: 'hidden',
     transition: {
       delay: 0.5,
@@ -101,6 +115,7 @@ const boxVariants = {
 const infoVariants = {
   hover: {
     opacity: 1,
+
     transition: {
       delay: 0.5,
       duration: 0.3,
@@ -130,17 +145,28 @@ const Home = () => {
       ) : (
         <>
           <MainBox>
-            {data?.results.slice(0, 10).map((item) => (
-              <Box
-                whileHover={{ scale: 1.4 }}
-                key={item.id}
-                onClick={() => onClickId(item.id, item.media_type)}
-                bgPhoto={makeImagePath(item.backdrop_path, 'w500')}
-                layoutId={item.id + ''}
-              >
-                {item.title ? item.title : item.name}
-              </Box>
-            ))}
+            <AnimatePresence>
+              {data?.results.slice(0, 10).map((item) => (
+                <Box
+                  variants={boxVariants}
+                  whileHover="hover"
+                  initial="normal"
+                  transition={{ type: 'tween' }}
+                  style={{
+                    top: scrollY.get() + 100,
+                    bottom: scrollY.get() + 100,
+                  }}
+                  key={item.id}
+                  onClick={() => onClickId(item.id, item.media_type)}
+                  bgPhoto={makeImagePath(item.backdrop_path)}
+                  layoutId={item.id + ''}
+                >
+                  <Info variants={infoVariants}>
+                    <h4>{item.title ? item.title : item.name}</h4>
+                  </Info>
+                </Box>
+              ))}
+            </AnimatePresence>
           </MainBox>
           <AnimatePresence>
             {movieMatch ? (
