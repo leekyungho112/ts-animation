@@ -6,7 +6,7 @@ import { makeImagePath } from '../utils';
 import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import Detail from '../Components/Detail';
-
+import { Helmet } from 'react-helmet';
 const Wrapper = styled.div`
   background-color: black;
   display: flex;
@@ -102,7 +102,7 @@ const boxVariants = {
   hover: {
     scale: 1.3,
     y: -30,
-    borderRadius: 15,
+    borderRadius: '15px',
     zIndex: 99,
     overflow: 'hidden',
     transition: {
@@ -140,6 +140,9 @@ const Home = () => {
   const onOverlayClick = () => navigate('/');
   return (
     <Wrapper>
+      <Helmet>
+        <title>Home | Netflix</title>
+      </Helmet>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
@@ -182,7 +185,7 @@ const Home = () => {
                   }}
                   layoutId={movieMatch.params.movieId}
                 >
-                  <Detail />
+                  <Detail key={movieMatch.params.tvId} />
                 </BigMovie>
               </Overlay>
             ) : null}
@@ -199,7 +202,7 @@ const Home = () => {
                   }}
                   layoutId={tvMatch.params.tvId}
                 >
-                  <Detail />
+                  <Detail key={tvMatch.params.tvId} />
                 </BigMovie>
               </Overlay>
             ) : null}

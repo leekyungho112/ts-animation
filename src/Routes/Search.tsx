@@ -4,9 +4,9 @@ import { useLocation, useNavigate, useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { ISearchResult, searchAll } from '../api';
 import { makeImagePath } from '../utils';
-import noPoster from '../assets/noPosterSmall.png';
 import { AnimatePresence, motion, useViewportScroll } from 'framer-motion';
 import Detail from '../Components/Detail';
+import { Helmet } from 'react-helmet';
 const Wrapper = styled.div`
   background-color: black;
   margin: 100px 0px;
@@ -18,6 +18,7 @@ const Loader = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const BoxContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -30,7 +31,9 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   margin-bottom: 20px;
-
+  border-radius: 5px;
+  box-shadow: 0px 2px 15px 0px rgba(255, 255, 255, 0.22);
+  cursor: pointer;
   &:nth-child(4n-3) {
     transform-origin: center left;
   }
@@ -41,7 +44,7 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
 `;
 
 const MediaType = styled.div`
-  background-color: red;
+  background-color: teal;
   width: 40px;
   height: 40px;
   border-radius: 20px;
@@ -83,6 +86,7 @@ const BigMovie = styled(motion.div)`
   width: 50vw;
   height: 80vh;
   background-color: ${(props) => props.theme.black.darker};
+  box-shadow: 0px 2px 15px 0px rgba(255, 255, 255, 0.22);
   left: 0;
   right: 0;
   margin: 0 auto;
@@ -119,18 +123,15 @@ interface SearchProps {
 
 const Search = () => {
   const navigate = useNavigate();
-  const movieMatch = useMatch('/search/movies/:movieId');
-  console.log(movieMatch);
-  const tvMatch = useMatch('/search/tv/:tvId');
-  console.log(tvMatch);
-  const { scrollY } = useViewportScroll();
   const location = useLocation() as SearchProps;
   const keyword = new URLSearchParams(location.search).get('keyword');
+  const movieMatch = useMatch('/search/movies/:movieId');
+  const tvMatch = useMatch('/search/tv/:tvId');
+  const { scrollY } = useViewportScroll();
   const { data, isLoading } = useQuery<ISearchResult>(['search', keyword], () =>
     searchAll(keyword)
   );
   const onClickBox = (mediaType: string, searchId: number) => {
-    console.log(mediaType);
     if (mediaType === 'movie') {
       navigate(`/search/movies/${searchId}`);
     } else {
@@ -142,6 +143,9 @@ const Search = () => {
   };
   return (
     <Wrapper>
+      <Helmet>
+        <title>{`Search | ${keyword}`}</title>
+      </Helmet>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (
@@ -158,7 +162,7 @@ const Search = () => {
                   bgPhoto={
                     search.backdrop_path
                       ? makeImagePath(search.backdrop_path, 'w500')
-                      : noPoster
+                      : makeImagePath(search.poster_path, 'w500')
                   }
                 >
                   <MediaType>

@@ -8,6 +8,7 @@ import { useMatch, useNavigate } from 'react-router-dom';
 import { IoArrowForward } from 'react-icons/io5';
 import noPoster from '../assets/noPosterSmall.png';
 import Detail from '../Components/Detail';
+import { Helmet } from 'react-helmet';
 const Wrapper = styled.div`
   background-color: black;
   padding-bottom: 300px;
@@ -65,6 +66,8 @@ const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-size: cover;
   background-position: center center;
   height: 200px;
+  box-shadow: 0px 2px 15px 0px rgba(255, 255, 255, 0.22);
+  border-radius: 5px;
   cursor: pointer;
   &:first-child {
     transform-origin: center left;
@@ -110,7 +113,7 @@ const BigMovie = styled(motion.div)`
   width: 50vw;
   height: 80vh;
   background-color: ${(props) => props.theme.black.darker};
-
+  box-shadow: 0px 2px 15px 0px rgba(255, 255, 255, 0.22);
   overflow-y: scroll;
   left: 0;
   right: 0;
@@ -211,6 +214,9 @@ const Tv = () => {
   const isLoading = todayLoading || popTvLoading || topTvLoading;
   return (
     <Wrapper>
+      <Helmet>
+        <title>Tv | Netflix</title>
+      </Helmet>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (

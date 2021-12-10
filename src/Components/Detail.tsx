@@ -6,6 +6,7 @@ import { makeImagePath } from '../utils';
 import Similar from './Similar';
 import noPoster from '../assets/noPosterSmall.png';
 import { useParams } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 const Container = styled.div`
   border-radius: 20px;
@@ -128,10 +129,6 @@ const Detail = () => {
     ['movie', 'Detail'],
     () => (movieId ? getMovieDetail(movieId) : getTvDetail(tvId))
   );
-  // const { data: result, isLoading: tvLoading } = useQuery<IGetTvDetail>(
-  //   ['tv', 'tvDetail'],
-  //   () => getTvDetail(tvId)
-  // );
 
   const time = data?.runtime;
   const hour = time && Math.floor(time / 60);
@@ -139,6 +136,17 @@ const Detail = () => {
   const isLoading = movieLoading;
   return (
     <Container>
+      <Helmet>
+        <title>
+          {movieId ? (
+            data?.title
+          ) : isLoading ? (
+            <Loader>Loading...</Loader>
+          ) : (
+            data?.name
+          )}
+        </title>
+      </Helmet>
       {isLoading ? (
         <Loader>Loading...</Loader>
       ) : (

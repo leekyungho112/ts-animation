@@ -29,8 +29,8 @@ function App() {
       </Routes>
       <Routes>
         <Route path="/search" element={<Search />}>
-          <Route path="/search/movies/:movieId" element={<Detail />} />
-          <Route path="/search/tv/:tvId" element={<Detail />} />
+          <Route path="/search/movies/:movieId" element={<Search />} />
+          <Route path="/search/tv/:tvId" element={<Search />} />
         </Route>
       </Routes>
     </BrowserRouter>
