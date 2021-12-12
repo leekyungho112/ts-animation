@@ -10,6 +10,7 @@ import { Helmet } from 'react-helmet';
 
 const Container = styled.div`
   border-radius: 20px;
+  height: 100%;
 `;
 const BigImage = styled.div`
   width: 100%;
@@ -18,11 +19,8 @@ const BigImage = styled.div`
   background-size: cover;
 `;
 const Loader = styled.div`
-  display: flex;
   height: 100%;
   width: 100%;
-  justify-content: center;
-  align-items: center;
 `;
 const BigHeader = styled.div`
   padding: 20px;
@@ -126,31 +124,32 @@ const Detail = () => {
   const { movieId, tvId } = useParams() as RouteParams;
 
   const { data, isLoading: movieLoading } = useQuery<IGetMovieDetail>(
-    ['movie', 'Detail'],
-    () => (movieId ? getMovieDetail(movieId) : getTvDetail(tvId))
+    ['movieDetail'],
+    () => (movieId ? getMovieDetail(movieId) : getTvDetail(tvId)),
+    { keepPreviousData: true }
   );
 
   const time = data?.runtime;
   const hour = time && Math.floor(time / 60);
   const minutes = time && time % 60;
-  const isLoading = movieLoading;
+
   return (
-    <Container>
-      <Helmet>
-        <title>
-          {movieId ? (
-            data?.title
-          ) : isLoading ? (
-            <Loader>Loading...</Loader>
-          ) : (
-            data?.name
-          )}
-        </title>
-      </Helmet>
-      {isLoading ? (
+    <>
+      {movieLoading ? (
         <Loader>Loading...</Loader>
       ) : (
-        <>
+        <Container>
+          <Helmet>
+            <title>
+              {movieId ? (
+                data?.title
+              ) : movieLoading ? (
+                <Loader>Loading...</Loader>
+              ) : (
+                data?.name
+              )}
+            </title>
+          </Helmet>
           <BigImage
             style={{
               backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
@@ -191,11 +190,10 @@ const Detail = () => {
                 </CompanyInfo>
               ))}
           </BigCompany>
-
-          <Similar />
-        </>
+          <Similar />)
+        </Container>
       )}
-    </Container>
+    </>
   );
 };
 

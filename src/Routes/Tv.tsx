@@ -252,7 +252,9 @@ const Tv = () => {
                       bgPhoto={
                         tv.backdrop_path
                           ? makeImagePath(tv.backdrop_path, 'w500')
-                          : makeImagePath(tv.poster_path, 'w500')
+                          : tv.poster_path
+                          ? makeImagePath(tv.poster_path, 'w500')
+                          : noPoster
                       }
                     >
                       <Info variants={infoVariants}>

@@ -76,9 +76,8 @@ interface RouteParams {
 }
 const Similar = () => {
   const { movieId, tvId } = useParams() as RouteParams;
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    ['movie', 'similar'],
-    () => (movieId ? similarMovie(movieId) : similarTv(tvId))
+  const { data, isLoading } = useQuery<IGetMoviesResult>('similar', () =>
+    movieId ? similarMovie(movieId) : similarTv(tvId)
   );
 
   return (

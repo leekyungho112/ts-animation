@@ -1,4 +1,3 @@
-import React from 'react';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { allTrending, ITrendResult } from '../api';
@@ -7,6 +6,7 @@ import { useNavigate, useMatch } from 'react-router-dom';
 import { motion, AnimatePresence, useViewportScroll } from 'framer-motion';
 import Detail from '../Components/Detail';
 import { Helmet } from 'react-helmet';
+
 const Wrapper = styled.div`
   background-color: black;
   display: flex;
@@ -91,6 +91,7 @@ const BigMovie = styled(motion.div)`
   background-color: ${(props) => props.theme.black.darker};
   left: 0;
   right: 0;
+  z-index: 99;
   margin: 0 auto;
   overflow-y: scroll;
 `;
@@ -128,6 +129,7 @@ const Home = () => {
   const navigate = useNavigate();
   const movieMatch = useMatch('/movie/:movieId');
   const tvMatch = useMatch('/tv/:tvId');
+
   const { scrollY } = useViewportScroll();
   const { data, isLoading } = useQuery<ITrendResult>('trend', allTrending);
   const onClickId = (itemId: number, media: string) => {
@@ -137,7 +139,8 @@ const Home = () => {
       navigate(`/tv/${itemId}`);
     }
   };
-  const onOverlayClick = () => navigate('/');
+  const onOverlayClick = () => navigate(-1);
+
   return (
     <Wrapper>
       <Helmet>
@@ -173,11 +176,12 @@ const Home = () => {
           </MainBox>
           <AnimatePresence>
             {movieMatch ? (
-              <Overlay
-                onClick={onOverlayClick}
-                exit={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
+              <>
+                <Overlay
+                  onClick={onOverlayClick}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
                 <BigMovie
                   style={{
                     top: scrollY.get() + 100,
@@ -185,16 +189,19 @@ const Home = () => {
                   }}
                   layoutId={movieMatch.params.movieId}
                 >
-                  <Detail key={movieMatch.params.tvId} />
+                  <Detail />
                 </BigMovie>
-              </Overlay>
+              </>
             ) : null}
+          </AnimatePresence>
+          <AnimatePresence>
             {tvMatch ? (
-              <Overlay
-                onClick={onOverlayClick}
-                exit={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-              >
+              <>
+                <Overlay
+                  onClick={onOverlayClick}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
                 <BigMovie
                   style={{
                     top: scrollY.get() + 100,
@@ -202,9 +209,9 @@ const Home = () => {
                   }}
                   layoutId={tvMatch.params.tvId}
                 >
-                  <Detail key={tvMatch.params.tvId} />
+                  <Detail />
                 </BigMovie>
-              </Overlay>
+              </>
             ) : null}
           </AnimatePresence>
         </>
