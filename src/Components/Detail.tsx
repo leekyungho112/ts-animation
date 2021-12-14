@@ -152,9 +152,11 @@ const Detail = () => {
           </Helmet>
           <BigImage
             style={{
-              backgroundImage: `linear-gradient(to top,black, transparent), url(${makeImagePath(
-                data ? data?.poster_path : noPoster
-              )})`,
+              backgroundImage: data?.backdrop_path
+                ? `linear-gradient(to top,black, transparent), url(${makeImagePath(
+                    data.backdrop_path
+                  )})`
+                : noPoster,
             }}
           />
           <BigHeader>

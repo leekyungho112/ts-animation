@@ -38,7 +38,7 @@ export interface IGetMovieDetail {
   title: string;
   vote_average: number;
   overview: string;
-  poster_path: string;
+  poster_path?: string;
   name: string;
   runtime: number;
   number_of_seasons: number;
