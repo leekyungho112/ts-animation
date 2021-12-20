@@ -143,7 +143,6 @@ const Search = () => {
   const onOverlayClick = () => {
     navigate(-1);
   };
-  console.log(data);
 
   return (
     <Wrapper>

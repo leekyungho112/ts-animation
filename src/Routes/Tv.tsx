@@ -170,7 +170,9 @@ const Tv = () => {
   );
   const navigate = useNavigate();
   const bigTvMatch = useMatch('/tv/show/:tvId');
+
   const { scrollY } = useViewportScroll();
+
   const [todayIndex, setTodayIndex] = useState(0);
   const [popIndex, setPopIndex] = useState(0);
   const [topIndex, setTopIndex] = useState(0);
