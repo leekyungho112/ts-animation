@@ -157,19 +157,16 @@ const offset = 6;
 const Movie = () => {
   const navigate = useNavigate();
   const bigMovieMatch = useMatch('/movies/:movieId');
+  console.log(bigMovieMatch);
   const { scrollY } = useViewportScroll();
   const { data, isLoading: nowLoading } = useQuery<IGetMoviesResult>(
     ['movies', 'nowPlaying'],
     getMovies
   );
-  const {
-    data: topMovieData,
-    isLoading: topMovieLoading,
-  } = useQuery<IGetMoviesResult>(['movie', 'topMovie'], topMovies);
-  const {
-    data: upcomingData,
-    isLoading: upcomingLoading,
-  } = useQuery<IGetMoviesResult>(['movie', 'upcoming'], upcomingMovie);
+  const { data: topMovieData, isLoading: topMovieLoading } =
+    useQuery<IGetMoviesResult>(['movie', 'topMovie'], topMovies);
+  const { data: upcomingData, isLoading: upcomingLoading } =
+    useQuery<IGetMoviesResult>(['movie', 'upcoming'], upcomingMovie);
 
   const [index, setIndex] = useState(0);
   const [topIndex, setTopIndex] = useState(0);
@@ -240,7 +237,7 @@ const Movie = () => {
                   .slice(offset * index, offset * index + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={String(movie.id)}
+                      layoutId={`now_${movie.id}`}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
@@ -276,7 +273,7 @@ const Movie = () => {
                   .slice(offset * upIndex, offset * upIndex + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={String(movie.id)}
+                      layoutId={`upcoming_${movie.id}`}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"
@@ -316,7 +313,7 @@ const Movie = () => {
                   .slice(offset * topIndex, offset * topIndex + offset)
                   .map((movie) => (
                     <Box
-                      layoutId={String(movie.id)}
+                      layoutId={`top_${movie.id}`}
                       key={movie.id}
                       whileHover="hover"
                       initial="normal"

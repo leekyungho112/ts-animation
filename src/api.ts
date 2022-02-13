@@ -90,18 +90,18 @@ export function allTrending() {
 
 export function getMovies() {
   return fetch(
-    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=2`
+    `${BASE_PATH}/movie/popular?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 
 export function topMovies() {
   return fetch(
-    `${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR`
+    `${BASE_PATH}/movie/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 export function upcomingMovie() {
   return fetch(
-    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR&page=5`
+    `${BASE_PATH}/movie/upcoming?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 export function getMovieDetail(movieId: string) {
@@ -127,17 +127,17 @@ export function similarTv(tvId: string) {
 
 export function getTv() {
   return fetch(
-    `${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko-KR`
+    `${BASE_PATH}/tv/airing_today?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 export function getPopularTv() {
   return fetch(
-    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=4`
+    `${BASE_PATH}/tv/popular?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 export function getTopRatedTv() {
   return fetch(
-    `${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR&page=2`
+    `${BASE_PATH}/tv/top_rated?api_key=${API_KEY}&language=ko-KR&page=1`
   ).then((response) => response.json());
 }
 

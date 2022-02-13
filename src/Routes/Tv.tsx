@@ -246,7 +246,7 @@ const Tv = () => {
                     <Box
                       key={tv.id}
                       whileHover="hover"
-                      layoutId={String(tv.id)}
+                      layoutId={`today-${tv.id}`}
                       initial="normal"
                       onClick={() => onClickBox(tv.id)}
                       variants={boxVariants}
@@ -287,7 +287,7 @@ const Tv = () => {
                   .map((tv) => (
                     <Box
                       key={tv.id}
-                      layoutId={String(tv.id)}
+                      layoutId={`popular-${tv.id}`}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}
@@ -327,7 +327,7 @@ const Tv = () => {
                   .map((tv) => (
                     <Box
                       key={tv.id}
-                      layoutId={String(tv.id)}
+                      layoutId={`top-${tv.id}`}
                       whileHover="hover"
                       initial="normal"
                       variants={boxVariants}

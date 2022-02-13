@@ -30,3 +30,9 @@
 ---
 
 [2022 Komflix](https://leekyungho112.github.io/ts-animation)
+
+### Fixed
+
+- [x] 404 issue
+- [x] slide layoutId 겹침 현상 해결
+- [ ] click시 모달창 애니메이션 효과 적용 X layoutId가 동일시 안되는 문제
